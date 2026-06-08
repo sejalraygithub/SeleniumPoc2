@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Automation Exercise Regression Suite" parallel="false">
+    <test name="Smoke And Regression Tests">
+        <classes>
+            <class name="testcases.HomePageTest"/>
+            <class name="testcases.SignupLoginTest"/>
+            <class name="testcases.LoginTest"/>
+            <class name="testcases.ProductPageTest"/>
+            <class name="testcases.CartPageTest"/>
+            <class name="testcases.CheckoutTest"/>
+           
+        </classes>
+    </test>
+</suite>

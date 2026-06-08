@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="Default test(failed)">
+    <classes>
+      <class name="testcases.LoginTest">
+        <methods>
+          <include name="verifyBlankLoginDoesNotSubmit"/>
+          <include name="verifyValidUserCanLogin"/>
+          <include name="verifyInvalidLoginShowsCorrectError"/>
+          <include name="closeBrowser"/>
+          <include name="verifyValidUserCanLoginAndLogout"/>
+          <include name="openApplication"/>
+        </methods>
+      </class> <!-- testcases.LoginTest -->
+      <class name="testcases.CartPageTest">
+        <methods>
+          <include name="verifyGuestUserIsAskedToLoginBeforeCheckout"/>
+          <include name="closeBrowser"/>
+          <include name="openApplication"/>
+        </methods>
+      </class> <!-- testcases.CartPageTest -->
+      <class name="testcases.SignupLoginTest">
+        <methods>
+          <include name="verifySignupAndLoginFormsAreVisible"/>
+          <include name="verifyExistingEmailShowsSignupError"/>
+          <include name="verifyNewUserCanCreateAccount"/>
+          <include name="verifyAccountInformationFormIsVisibleAfterSignup"/>
+          <include name="closeBrowser"/>
+          <include name="verifyBlankSignupDoesNotOpenAccountInformationPage"/>
+          <include name="openApplication"/>
+        </methods>
+      </class> <!-- testcases.SignupLoginTest -->
+      <class name="testcases.CheckoutTest">
+        <methods>
+          <include name="closeBrowser"/>
+          <include name="verifyLoggedInUserCanPlaceOrderAndDownloadInvoice"/>
+          <include name="verifyCheckoutPageShowsAddressAndOrderSummary"/>
+          <include name="openApplication"/>
+        </methods>
+      </class> <!-- testcases.CheckoutTest -->
+      <class name="testcases.HomePageTest">
+        <methods>
+          <include name="verifyProductsNavigationFromHomePage"/>
+          <include name="verifySignupLoginNavigationFromHomePage"/>
+          <include name="closeBrowser"/>
+          <include name="openApplication"/>
+        </methods>
+      </class> <!-- testcases.HomePageTest -->
+    </classes>
+  </test> <!-- Default test(failed) -->
+</suite> <!-- Failed suite [Default suite] -->

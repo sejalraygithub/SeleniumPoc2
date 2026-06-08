@@ -2,7 +2,10 @@ package testcases;
 
 import org.testng.annotations.Test;
 import Base.BaseTest;
+import pomPage.CartPage;
 import pomPage.HomePage;
+import pomPage.ProductsPage;
+import pomPage.SignupLoginPage;
 
 public class HomePageTest extends BaseTest {
 
@@ -25,25 +28,23 @@ public class HomePageTest extends BaseTest {
     public void verifyProductsNavigationFromHomePage() {
 
         HomePage homePage = new HomePage(driver);
-        homePage.openProductsPage();
-        homePage.verifyHomePageIsVisible();
+        ProductsPage productsPage = homePage.openProductsPage();
+        productsPage.verifyProductsPageIsVisible();
     }
 
     @Test(groups = {"regression"})
     public void verifyCartNavigationFromHomePage() {
 
         HomePage homePage = new HomePage(driver);
-        homePage.openCartPage();
-
-        // validation handled in CartPage if needed
+        CartPage cartPage = homePage.openCartPage();
+        cartPage.verifyCartTableIsVisible();
     }
 
     @Test(groups = {"regression"})
     public void verifySignupLoginNavigationFromHomePage() {
 
         HomePage homePage = new HomePage(driver);
-        homePage.openSignupLoginPage();
-
-        // validation handled in SignupLoginPage if needed
+        SignupLoginPage signupLoginPage = homePage.openSignupLoginPage();
+        signupLoginPage.verifySignupFormIsVisible();
     }
 }

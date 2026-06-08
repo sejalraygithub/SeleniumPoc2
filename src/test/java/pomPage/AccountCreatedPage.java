@@ -62,7 +62,6 @@ public class AccountCreatedPage extends BasePage {
     }
 
 	public boolean isAccountCreatedMessageVisible() {
-		// TODO Auto-generated method stub
-		return false;
+		return isDisplayed(accountCreatedHeading);
 	}
 }

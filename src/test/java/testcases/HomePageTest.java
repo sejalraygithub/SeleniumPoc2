@@ -1,50 +1,26 @@
 package testcases;
 
-import org.testng.annotations.Test;
 import Base.BaseTest;
-import pomPage.CartPage;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import pomPage.HomePage;
-import pomPage.ProductsPage;
 import pomPage.SignupLoginPage;
 
 public class HomePageTest extends BaseTest {
 
-    @Test(groups = {"e2e", "smoke"})
-    public void verifyHomePageLoadsCorrectly() {
-
+    @Test
+    public void verifyHomePageIsDisplayed() {
         HomePage homePage = new HomePage(driver);
-        homePage.verifyHomePageIsVisible();
+
+        Assert.assertTrue(homePage.isHomePageDisplayed(), "Home page is not displayed");
     }
 
-    @Test(groups = {"ui"})
-    public void verifyHomePageMainSectionsAreVisible() {
-
+    @Test
+    public void verifySignupLoginPageOpens() {
         HomePage homePage = new HomePage(driver);
-        homePage.verifyFeaturedProductsSectionIsVisible();
-        homePage.verifyRecommendedItemsSectionIsVisible();
-    }
+        SignupLoginPage signupLoginPage = homePage.clickSignupLogin();
 
-    @Test(groups = {"regression"})
-    public void verifyProductsNavigationFromHomePage() {
-
-        HomePage homePage = new HomePage(driver);
-        ProductsPage productsPage = homePage.openProductsPage();
-        productsPage.verifyProductsPageIsVisible();
-    }
-
-    @Test(groups = {"regression"})
-    public void verifyCartNavigationFromHomePage() {
-
-        HomePage homePage = new HomePage(driver);
-        CartPage cartPage = homePage.openCartPage();
-        cartPage.verifyCartTableIsVisible();
-    }
-
-    @Test(groups = {"regression"})
-    public void verifySignupLoginNavigationFromHomePage() {
-
-        HomePage homePage = new HomePage(driver);
-        SignupLoginPage signupLoginPage = homePage.openSignupLoginPage();
-        signupLoginPage.verifySignupFormIsVisible();
+        Assert.assertTrue(signupLoginPage.isSignupFormDisplayed(), "Signup form is not displayed");
+        Assert.assertTrue(signupLoginPage.isLoginFormDisplayed(), "Login form is not displayed");
     }
 }

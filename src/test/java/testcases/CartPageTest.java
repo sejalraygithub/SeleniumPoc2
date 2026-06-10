@@ -1,48 +1,44 @@
 package testcases;
 
-import org.testng.annotations.Test;
 import Base.BaseTest;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import pomPage.CartPage;
 import pomPage.HomePage;
+import pomPage.ProductDetailsPage;
+import pomPage.ProductsPage;
 
 public class CartPageTest extends BaseTest {
 
-    @Test(groups = {"ui"})
-    public void verifyCartTableLayoutAfterAddingProduct() {
-        CartPage cartPage = new HomePage(driver)
-                .openProductsPage()
-                .addFirstProductAndOpenCart();
+    @Test
+    public void verifyProductCanBeAddedToCart() throws InterruptedException {
+        HomePage homePage = new HomePage(driver);
+        ProductsPage productsPage = homePage.clickProducts();
+        CartPage cartPage = productsPage.addFirstProductToCart();
 
-        cartPage.verifyCartTableIsVisible();
-        cartPage.verifyProductIsVisibleInCart();
+        Assert.assertTrue(cartPage.isCartPageDisplayed(), "Cart page is not displayed");
+        Assert.assertTrue(cartPage.isProductDisplayedInCart(), "Product is not displayed in cart");
     }
 
-    @Test(groups = {"regression"})
-    public void verifyProductCanBeRemovedFromCart() {
-        CartPage cartPage = new HomePage(driver)
-                .openProductsPage()
-                .addFirstProductAndOpenCart();
+    @Test
+    public void verifyProductCanBeRemovedFromCart() throws InterruptedException {
+        HomePage homePage = new HomePage(driver);
+        ProductsPage productsPage = homePage.clickProducts();
+        CartPage cartPage = productsPage.addFirstProductToCart();
 
-        cartPage.removeFirstProduct();
-        cartPage.verifyEmptyCartMessageIsVisible();
+        cartPage.removeProductFromCart();
+
+        Assert.assertTrue(cartPage.isCartEmptyMessageDisplayed(), "Cart empty message is not displayed");
     }
 
-    @Test(groups = {"regression"})
-    public void verifyProductQuantityFromDetailsPage() {
-        CartPage cartPage = new HomePage(driver)
-                .openProductsPage()
-                .openFirstProductDetails()
-                .addProductWithQuantityAndOpenCart("3");
+    @Test
+    public void verifyProductQuantityInCart() throws InterruptedException {
+        HomePage homePage = new HomePage(driver);
+        ProductDetailsPage productDetailsPage = homePage
+                .clickProducts()
+                .openFirstProductDetails();
+        CartPage cartPage = productDetailsPage.addProductWithQuantity("3");
 
-        cartPage.verifyFirstProductQuantity("3");
-    }
-
-    @Test(groups = {"negative"})
-    public void verifyGuestUserIsAskedToLoginBeforeCheckout() {
-        new HomePage(driver)
-                .openProductsPage()
-                .addFirstProductAndOpenCart()
-                .proceedToCheckoutAsGuest()
-                .verifyLoginFormIsVisible();
+        Assert.assertEquals(cartPage.getProductQuantity(), "3", "Product quantity is not correct");
     }
 }

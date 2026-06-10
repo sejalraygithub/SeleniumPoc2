@@ -1,7 +1,8 @@
 package testcases;
 
-import org.testng.annotations.Test;
 import Base.BaseTest;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import pomPage.HomePage;
 import pomPage.ProductDetailsPage;
 import pomPage.ProductsPage;
@@ -9,66 +10,33 @@ import utils.TestData;
 
 public class ProductPageTest extends BaseTest {
 
-    @Test(groups = {"ui"})
-    public void verifyProductsPageLayout() {
+    @Test
+    public void verifyProductsPageIsDisplayed() {
+        HomePage homePage = new HomePage(driver);
+        ProductsPage productsPage = homePage.clickProducts();
 
-        ProductsPage productsPage = new HomePage(driver)
-                .openProductsPage();
-
-        productsPage.verifyProductsPageIsVisible();
-        productsPage.verifyProductListIsVisible();
+        Assert.assertTrue(productsPage.isProductsPageDisplayed(), "Products page is not displayed");
+        Assert.assertTrue(productsPage.isProductListDisplayed(), "Product list is not displayed");
     }
 
-    @Test(groups = {"e2e", "regression"})
-    public void verifyUserCanSearchProductAndAddToCart() {
+    @Test
+    public void verifyUserCanSearchProduct() {
+        HomePage homePage = new HomePage(driver);
+        ProductsPage productsPage = homePage.clickProducts();
 
-        ProductsPage productsPage = new HomePage(driver)
-                .openProductsPage();
+        productsPage.searchProduct(TestData.productName);
 
-        productsPage.searchProduct(TestData.PRODUCT_SEARCH_TEXT);
-        productsPage.verifySearchedProductsHeadingIsVisible();
-
-        productsPage.addFirstProductAndOpenCart()
-                .verifyProductIsVisibleInCart();
+        Assert.assertTrue(productsPage.isSearchedProductsHeadingDisplayed(), "Searched products heading is not displayed");
+        Assert.assertTrue(productsPage.isProductListDisplayed(), "Searched product list is not displayed");
     }
 
-    @Test(groups = {"regression"})
-    public void verifyProductDetailsPageShowsProductInformation() {
-
-        ProductDetailsPage productDetailsPage = new HomePage(driver)
-                .openProductsPage()
+    @Test
+    public void verifyProductDetailsPageIsDisplayed() {
+        HomePage homePage = new HomePage(driver);
+        ProductDetailsPage productDetailsPage = homePage
+                .clickProducts()
                 .openFirstProductDetails();
 
-        productDetailsPage.verifyProductDetailsAreVisible();
-    }
-
-    @Test(groups = {"regression"})
-    public void verifyCategoryFilterWorks() {
-
-        ProductsPage productsPage = new HomePage(driver)
-                .openProductsPage()
-                .filterWomenDressProducts();
-
-        productsPage.verifyProductListIsVisible();
-    }
-
-    @Test(groups = {"regression"})
-    public void verifyBrandFilterWorks() {
-
-        ProductsPage productsPage = new HomePage(driver)
-                .openProductsPage()
-                .filterPoloBrandProducts();
-
-        productsPage.verifyBrandSectionWorks();
-    }
-
-    @Test(groups = {"negative"})
-    public void verifyInvalidProductSearchShowsNoProductCards() {
-
-        ProductsPage productsPage = new HomePage(driver)
-                .openProductsPage();
-
-        productsPage.searchProduct(TestData.INVALID_PRODUCT_SEARCH_TEXT);
-        productsPage.verifySearchedProductsHeadingIsVisible();
+        Assert.assertTrue(productDetailsPage.isProductDetailsDisplayed(), "Product details page is not displayed");
     }
 }

@@ -2,101 +2,86 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class SignupLoginPage extends BasePage {
+public class SignupLoginPage {
 
-    private final By newUserSignupHeading = By.xpath("//h2[contains(.,'New User Signup!')]");
-    private final By signupNameInput = By.cssSelector("input[data-qa='signup-name']");
-    private final By signupEmailInput = By.cssSelector("input[data-qa='signup-email']");
-    private final By signupButton = By.cssSelector("button[data-qa='signup-button']");
+    WebDriver driver;
 
-    private final By loginHeading = By.xpath("//h2[contains(.,'Login to your account')]");
-    private final By loginEmailInput = By.cssSelector("input[data-qa='login-email']");
-    private final By loginPasswordInput = By.cssSelector("input[data-qa='login-password']");
-    private final By loginButton = By.cssSelector("button[data-qa='login-button']");
-
-    private final By signupEmailError = By.xpath("//*[contains(text(),'Email Address already exist!')]");
-    private final By invalidLoginError = By.xpath("//*[contains(text(),'Your email or password is incorrect!')]");
+    WebElement signupHeading;
+    WebElement signupNameTextbox;
+    WebElement signupEmailTextbox;
+    WebElement signupButton;
+    WebElement loginHeading;
+    WebElement loginEmailTextbox;
+    WebElement loginPasswordTextbox;
+    WebElement loginButton;
 
     public SignupLoginPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        signupHeading = driver.findElement(By.xpath("//h2[contains(text(),'New User Signup!')]"));
+        signupNameTextbox = driver.findElement(By.cssSelector("input[data-qa='signup-name']"));
+        signupEmailTextbox = driver.findElement(By.cssSelector("input[data-qa='signup-email']"));
+        signupButton = driver.findElement(By.cssSelector("button[data-qa='signup-button']"));
+        loginHeading = driver.findElement(By.xpath("//h2[contains(text(),'Login to your account')]"));
+        loginEmailTextbox = driver.findElement(By.cssSelector("input[data-qa='login-email']"));
+        loginPasswordTextbox = driver.findElement(By.cssSelector("input[data-qa='login-password']"));
+        loginButton = driver.findElement(By.cssSelector("button[data-qa='login-button']"));
     }
 
-    // =========================
-    // ✅ ASSERTIONS ADDED
-    // =========================
-
-    public void verifySignupFormIsVisible() {
-        Assert.assertTrue(isDisplayed(newUserSignupHeading), "Signup heading not visible!");
-        Assert.assertTrue(isDisplayed(signupNameInput), "Signup name input not visible!");
-        Assert.assertTrue(isDisplayed(signupEmailInput), "Signup email input not visible!");
-        Assert.assertTrue(isDisplayed(signupButton), "Signup button not visible!");
+    public boolean isSignupFormDisplayed() {
+        return signupHeading.isDisplayed()
+                && signupNameTextbox.isDisplayed()
+                && signupEmailTextbox.isDisplayed()
+                && signupButton.isDisplayed();
     }
 
-    public void verifyLoginFormIsVisible() {
-        Assert.assertTrue(isDisplayed(loginHeading), "Login heading not visible!");
-        Assert.assertTrue(isDisplayed(loginEmailInput), "Login email input not visible!");
-        Assert.assertTrue(isDisplayed(loginPasswordInput), "Login password input not visible!");
-        Assert.assertTrue(isDisplayed(loginButton), "Login button not visible!");
+    public boolean isLoginFormDisplayed() {
+        return loginHeading.isDisplayed()
+                && loginEmailTextbox.isDisplayed()
+                && loginPasswordTextbox.isDisplayed()
+                && loginButton.isDisplayed();
     }
 
-    public void verifySignupPageIsLoaded() {
-        Assert.assertTrue(
-            isDisplayed(newUserSignupHeading) && isDisplayed(loginHeading),
-            "Signup/Login page not loaded properly!"
-        );
-    }
-
-    public void verifyExistingEmailErrorIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(signupEmailError),
-            "Existing email error message not visible!"
-        );
-    }
-
-    public void verifyInvalidLoginErrorIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(invalidLoginError),
-            "Invalid login error message not visible!"
-        );
-    }
-
-    // =========================
-    // ACTION METHODS (UNCHANGED)
-    // =========================
-
-    public AccountInformationPage startSignup(String name, String email) {
-        type(signupNameInput, name);
-        type(signupEmailInput, email);
-        click(signupButton);
+    public AccountInformationPage enterSignupDetails(String name, String email) {
+        signupNameTextbox.clear();
+        signupNameTextbox.sendKeys(name);
+        signupEmailTextbox.clear();
+        signupEmailTextbox.sendKeys(email);
+        signupButton.click();
         return new AccountInformationPage(driver);
     }
 
-    public void submitSignup(String name, String email) {
-        type(signupNameInput, name);
-        type(signupEmailInput, email);
-        click(signupButton);
+    public void submitSignupDetails(String name, String email) {
+        signupNameTextbox.clear();
+        signupNameTextbox.sendKeys(name);
+        signupEmailTextbox.clear();
+        signupEmailTextbox.sendKeys(email);
+        signupButton.click();
     }
 
-    public HomePage login(String email, String password) {
-        type(loginEmailInput, email);
-        type(loginPasswordInput, password);
-        click(loginButton);
+    public HomePage loginUser(String email, String password) {
+        loginEmailTextbox.clear();
+        loginEmailTextbox.sendKeys(email);
+        loginPasswordTextbox.clear();
+        loginPasswordTextbox.sendKeys(password);
+        loginButton.click();
         return new HomePage(driver);
     }
 
-    public void submitLogin(String email, String password) {
-        type(loginEmailInput, email);
-        type(loginPasswordInput, password);
-        click(loginButton);
+    public void submitLoginDetails(String email, String password) {
+        loginEmailTextbox.clear();
+        loginEmailTextbox.sendKeys(email);
+        loginPasswordTextbox.clear();
+        loginPasswordTextbox.sendKeys(password);
+        loginButton.click();
     }
 
-    public boolean isExistingEmailErrorVisible() {
-        return isDisplayed(signupEmailError);
+    public boolean isExistingEmailErrorDisplayed() {
+        return driver.findElements(By.xpath("//*[contains(text(),'Email Address already exist!')]")).size() > 0;
     }
 
-    public boolean isInvalidLoginErrorVisible() {
-        return isDisplayed(invalidLoginError);
+    public boolean isInvalidLoginErrorDisplayed() {
+        return driver.findElements(By.xpath("//*[contains(text(),'Your email or password is incorrect!')]")).size() > 0;
     }
 }

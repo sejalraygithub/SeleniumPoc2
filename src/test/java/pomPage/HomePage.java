@@ -2,107 +2,56 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class HomePage extends BasePage {
+public class HomePage {
 
-    private final By homeSlider = By.id("slider-carousel");
-    private final By productsLink = By.xpath("//a[contains(.,'Products')]");
-    private final By cartLink = By.xpath("//a[contains(.,'Cart')]");
-    private final By signupLoginLink = By.linkText("Signup / Login");
-    private final By featuredProductsHeading = By.xpath("//h2[contains(.,'Features Items')]");
-    private final By recommendedItemsHeading = By.xpath("//h2[contains(.,'recommended items')]");
-    private final By loggedInUserName = By.xpath("//a[contains(.,'Logged in as')]");
-    private final By logoutLink = By.xpath("//a[contains(.,'Logout')]");
+    WebDriver driver;
+
+    WebElement homeButton;
+    WebElement signupLoginButton;
+    WebElement productsButton;
+    WebElement cartButton;
+    WebElement logoutButton;
 
     public HomePage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
     }
 
-    // =========================
-    // ✅ ASSERTIONS ADDED
-    // =========================
+    public boolean isHomePageDisplayed() {
+        if (driver.findElements(By.xpath("//a[contains(text(),'Home')]")).size() == 0) {
+            return false;
+        }
 
-    public void verifyHomePageIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(homeSlider),
-            "Home slider is not visible!"
-        );
-
-        Assert.assertTrue(
-            pageTitle().contains("Automation Exercise"),
-            "Home page title mismatch!"
-        );
+        homeButton = driver.findElement(By.xpath("//a[contains(text(),'Home')]"));
+        return homeButton.isDisplayed();
     }
 
-    public void verifyFeaturedProductsSectionIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(featuredProductsHeading),
-            "Featured products section is not visible!"
-        );
-    }
-
-    public void verifyRecommendedItemsSectionIsVisible() {
-        scrollToBottom();
-
-        Assert.assertTrue(
-            isDisplayed(recommendedItemsHeading),
-            "Recommended items section is not visible!"
-        );
-    }
-
-    public void verifyUserIsLoggedIn() {
-        Assert.assertTrue(
-            isDisplayed(loggedInUserName),
-            "Logged-in username is not visible!"
-        );
-    }
-
-    public void verifyLogoutLinkIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(logoutLink),
-            "Logout link is not visible!"
-        );
-    }
-
-    // =========================
-    // ACTION METHODS (UNCHANGED)
-    // =========================
-
-    public boolean isHomePageVisible() {
-        return isDisplayed(homeSlider) && pageTitle().contains("Automation Exercise");
-    }
-
-    public ProductsPage openProductsPage() {
-        click(productsLink);
-        return new ProductsPage(driver);
-    }
-
-    public CartPage openCartPage() {
-        click(cartLink);
-        return new CartPage(driver);
-    }
-
-    public SignupLoginPage openSignupLoginPage() {
-        click(signupLoginLink);
+    public SignupLoginPage clickSignupLogin() {
+        signupLoginButton = driver.findElement(By.linkText("Signup / Login"));
+        signupLoginButton.click();
         return new SignupLoginPage(driver);
     }
 
-    public boolean isFeaturedProductsSectionVisible() {
-        return isDisplayed(featuredProductsHeading);
+    public ProductsPage clickProducts() {
+        productsButton = driver.findElement(By.xpath("//a[contains(text(),'Products')]"));
+        productsButton.click();
+        return new ProductsPage(driver);
     }
 
-    public boolean isRecommendedItemsSectionVisible() {
-        scrollToBottom();
-        return isDisplayed(recommendedItemsHeading);
+    public CartPage clickCart() {
+        cartButton = driver.findElement(By.xpath("//a[contains(text(),'Cart')]"));
+        cartButton.click();
+        return new CartPage(driver);
     }
 
-    public String loggedInText() {
-        return textOf(loggedInUserName);
+    public boolean isLoggedInAsUserDisplayed() {
+        return driver.findElements(By.xpath("//a[contains(text(),'Logged in as')]")).size() > 0;
     }
 
-    public SignupLoginPage logout() {
-        click(logoutLink);
+    public SignupLoginPage clickLogout() {
+        logoutButton = driver.findElement(By.xpath("//a[contains(text(),'Logout')]"));
+        logoutButton.click();
         return new SignupLoginPage(driver);
     }
 }

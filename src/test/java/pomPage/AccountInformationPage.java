@@ -2,92 +2,94 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
-public class AccountInformationPage extends BasePage {
+public class AccountInformationPage {
 
-    private final By accountInfoHeading = By.xpath("//b[contains(.,'Enter Account Information')]");
-    private final By titleMrRadioButton = By.id("id_gender1");
-    private final By titleMrsRadioButton = By.id("id_gender2");
-    private final By passwordInput = By.id("password");
-    private final By dayDropdown = By.id("days");
-    private final By monthDropdown = By.id("months");
-    private final By yearDropdown = By.id("years");
-    private final By firstNameInput = By.id("first_name");
-    private final By lastNameInput = By.id("last_name");
-    private final By addressInput = By.id("address1");
-    private final By countryDropdown = By.id("country");
-    private final By stateInput = By.id("state");
-    private final By cityInput = By.id("city");
-    private final By zipcodeInput = By.id("zipcode");
-    private final By mobileNumberInput = By.id("mobile_number");
-    private final By createAccountButton = By.cssSelector("button[data-qa='create-account']");
+    WebDriver driver;
+
+    WebElement accountInformationHeading;
+    WebElement genderRadioButton;
+    WebElement passwordTextbox;
+    WebElement dayDropdown;
+    WebElement monthDropdown;
+    WebElement yearDropdown;
+    WebElement firstNameTextbox;
+    WebElement lastNameTextbox;
+    WebElement addressTextbox;
+    WebElement countryDropdown;
+    WebElement stateTextbox;
+    WebElement cityTextbox;
+    WebElement zipcodeTextbox;
+    WebElement mobileNumberTextbox;
+    WebElement createAccountButton;
 
     public AccountInformationPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        accountInformationHeading = driver.findElement(By.xpath("//b[contains(text(),'Enter Account Information')]"));
+        genderRadioButton = driver.findElement(By.id("id_gender2"));
+        passwordTextbox = driver.findElement(By.id("password"));
+        dayDropdown = driver.findElement(By.id("days"));
+        monthDropdown = driver.findElement(By.id("months"));
+        yearDropdown = driver.findElement(By.id("years"));
+        firstNameTextbox = driver.findElement(By.id("first_name"));
+        lastNameTextbox = driver.findElement(By.id("last_name"));
+        addressTextbox = driver.findElement(By.id("address1"));
+        countryDropdown = driver.findElement(By.id("country"));
+        stateTextbox = driver.findElement(By.id("state"));
+        cityTextbox = driver.findElement(By.id("city"));
+        zipcodeTextbox = driver.findElement(By.id("zipcode"));
+        mobileNumberTextbox = driver.findElement(By.id("mobile_number"));
+        createAccountButton = driver.findElement(By.cssSelector("button[data-qa='create-account']"));
     }
 
-    // ✅ Assertion: Form visibility
-    public void verifyAccountInformationFormIsVisible() {
-        Assert.assertTrue(isDisplayed(accountInfoHeading), "Account Info heading not visible!");
-        Assert.assertTrue(isDisplayed(titleMrRadioButton), "Mr radio button not visible!");
-        Assert.assertTrue(isDisplayed(titleMrsRadioButton), "Mrs radio button not visible!");
-        Assert.assertTrue(isDisplayed(passwordInput), "Password field not visible!");
-        Assert.assertTrue(isDisplayed(dayDropdown), "Day dropdown not visible!");
-        Assert.assertTrue(isDisplayed(monthDropdown), "Month dropdown not visible!");
-        Assert.assertTrue(isDisplayed(yearDropdown), "Year dropdown not visible!");
-        Assert.assertTrue(isDisplayed(firstNameInput), "First name field not visible!");
-        Assert.assertTrue(isDisplayed(lastNameInput), "Last name field not visible!");
-        Assert.assertTrue(isDisplayed(addressInput), "Address field not visible!");
-        Assert.assertTrue(isDisplayed(createAccountButton), "Create Account button not visible!");
+    public boolean isAccountInformationFormDisplayed() {
+        return accountInformationHeading.isDisplayed()
+                && passwordTextbox.isDisplayed()
+                && firstNameTextbox.isDisplayed()
+                && lastNameTextbox.isDisplayed()
+                && createAccountButton.isDisplayed();
     }
 
-    // ✅ Assertion: Check heading text
-    public void verifyAccountInformationText() {
-        String actualText = driver.findElement(accountInfoHeading).getText();
-        Assert.assertTrue(actualText.contains("Enter Account Information"),
-            "Account Information text mismatch!"
-        );
-    }
-
-    // Action method (unchanged)
     public AccountCreatedPage createAccount(String firstName, String lastName, String password, String address,
                                             String country, String state, String city, String zipcode,
                                             String mobileNumber) {
 
-        click(titleMrsRadioButton);
+        genderRadioButton.click();
 
-        type(passwordInput, password);
-        selectByVisibleText(dayDropdown, "10");
-        selectByVisibleText(monthDropdown, "May");
-        selectByVisibleText(yearDropdown, "1995");
+        passwordTextbox.clear();
+        passwordTextbox.sendKeys(password);
 
-        type(firstNameInput, firstName);
-        type(lastNameInput, lastName);
-        type(addressInput, address);
+        new Select(dayDropdown).selectByVisibleText("10");
+        new Select(monthDropdown).selectByVisibleText("May");
+        new Select(yearDropdown).selectByVisibleText("1995");
 
-        selectByVisibleText(countryDropdown, country);
+        firstNameTextbox.clear();
+        firstNameTextbox.sendKeys(firstName);
 
-        type(stateInput, state);
-        type(cityInput, city);
-        type(zipcodeInput, zipcode);
-        type(mobileNumberInput, mobileNumber);
+        lastNameTextbox.clear();
+        lastNameTextbox.sendKeys(lastName);
 
-        click(createAccountButton);
+        addressTextbox.clear();
+        addressTextbox.sendKeys(address);
+
+        new Select(countryDropdown).selectByVisibleText(country);
+
+        stateTextbox.clear();
+        stateTextbox.sendKeys(state);
+
+        cityTextbox.clear();
+        cityTextbox.sendKeys(city);
+
+        zipcodeTextbox.clear();
+        zipcodeTextbox.sendKeys(zipcode);
+
+        mobileNumberTextbox.clear();
+        mobileNumberTextbox.sendKeys(mobileNumber);
+
+        createAccountButton.click();
 
         return new AccountCreatedPage(driver);
-    }
-
-    // ❌ Negative test assertion
-    public void submitEmptyRegistrationForm() {
-        click(createAccountButton);
-    }
-
-    // Optional validation after submit (can fail validation message later)
-    public void verifyErrorMessageIfAny(By errorLocator) {
-        Assert.assertTrue(
-            isDisplayed(errorLocator),
-            "Expected error message is not displayed!"
-        );
     }
 }

@@ -2,82 +2,70 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class PaymentPage extends BasePage {
+public class PaymentPage {
 
-    private final By nameOnCardInput = By.name("name_on_card");
-    private final By cardNumberInput = By.name("card_number");
-    private final By cvcInput = By.name("cvc");
-    private final By expiryMonthInput = By.name("expiry_month");
-    private final By expiryYearInput = By.name("expiry_year");
-    private final By payAndConfirmButton = By.id("submit");
-    private final By orderPlacedHeading = By.cssSelector("h2[data-qa='order-placed']");
-    private final By downloadInvoiceButton = By.xpath("//a[contains(.,'Download Invoice')]");
-    private final By continueButton = By.cssSelector("a[data-qa='continue-button']");
+    WebDriver driver;
+
+    WebElement nameOnCardTextbox;
+    WebElement cardNumberTextbox;
+    WebElement cvcTextbox;
+    WebElement expiryMonthTextbox;
+    WebElement expiryYearTextbox;
+    WebElement payButton;
+    WebElement continueButton;
 
     public PaymentPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        nameOnCardTextbox = driver.findElement(By.name("name_on_card"));
+        cardNumberTextbox = driver.findElement(By.name("card_number"));
+        cvcTextbox = driver.findElement(By.name("cvc"));
+        expiryMonthTextbox = driver.findElement(By.name("expiry_month"));
+        expiryYearTextbox = driver.findElement(By.name("expiry_year"));
+        payButton = driver.findElement(By.id("submit"));
     }
 
-    // =========================
-    // ✅ ASSERTIONS ADDED
-    // =========================
-
-    public void verifyPaymentFormIsVisible() {
-        Assert.assertTrue(isDisplayed(nameOnCardInput), "Name on card field not visible!");
-        Assert.assertTrue(isDisplayed(cardNumberInput), "Card number field not visible!");
-        Assert.assertTrue(isDisplayed(cvcInput), "CVC field not visible!");
-        Assert.assertTrue(isDisplayed(expiryMonthInput), "Expiry month field not visible!");
-        Assert.assertTrue(isDisplayed(expiryYearInput), "Expiry year field not visible!");
-        Assert.assertTrue(isDisplayed(payAndConfirmButton), "Pay & Confirm button not visible!");
+    public boolean isPaymentFormDisplayed() {
+        return nameOnCardTextbox.isDisplayed()
+                && cardNumberTextbox.isDisplayed()
+                && cvcTextbox.isDisplayed()
+                && expiryMonthTextbox.isDisplayed()
+                && expiryYearTextbox.isDisplayed()
+                && payButton.isDisplayed();
     }
 
-    public void verifyOrderPlacedMessageIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(orderPlacedHeading),
-            "Order placed message is not visible!"
-        );
-    }
+    public PaymentPage payByCard(String cardHolderName, String cardNumber, String cvc, String expiryMonth, String expiryYear) {
+        nameOnCardTextbox.clear();
+        nameOnCardTextbox.sendKeys(cardHolderName);
 
-    public void verifyInvoiceDownloadIsAvailable() {
-        Assert.assertTrue(
-            isDisplayed(downloadInvoiceButton),
-            "Invoice download button is not visible!"
-        );
-    }
+        cardNumberTextbox.clear();
+        cardNumberTextbox.sendKeys(cardNumber);
 
-    public void verifyPaymentPageTitle(String expectedTitle) {
-        Assert.assertEquals(
-            driver.getTitle(),
-            expectedTitle,
-            "Payment page title mismatch!"
-        );
-    }
+        cvcTextbox.clear();
+        cvcTextbox.sendKeys(cvc);
 
-    public void verifyPaymentPageURLContains(String keyword) {
-        Assert.assertTrue(
-            driver.getCurrentUrl().contains(keyword),
-            "Payment page URL mismatch!"
-        );
-    }
+        expiryMonthTextbox.clear();
+        expiryMonthTextbox.sendKeys(expiryMonth);
 
-    // =========================
-    // ACTION METHODS (UNCHANGED)
-    // =========================
+        expiryYearTextbox.clear();
+        expiryYearTextbox.sendKeys(expiryYear);
 
-    public PaymentPage payWithCard(String cardHolderName, String cardNumber, String cvc, String expiryMonth, String expiryYear) {
-        type(nameOnCardInput, cardHolderName);
-        type(cardNumberInput, cardNumber);
-        type(cvcInput, cvc);
-        type(expiryMonthInput, expiryMonth);
-        type(expiryYearInput, expiryYear);
-        click(payAndConfirmButton);
+        payButton.click();
         return this;
     }
 
-    public HomePage continueToHomePage() {
-        click(continueButton);
+    public boolean isOrderPlacedMessageDisplayed() {
+        return driver.findElements(By.cssSelector("h2[data-qa='order-placed']")).size() > 0;
+    }
+
+    public boolean isInvoiceDownloadDisplayed() {
+        return driver.findElements(By.xpath("//a[contains(text(),'Download Invoice')]")).size() > 0;
+    }
+
+    public HomePage clickContinue() {
+        continueButton = driver.findElement(By.cssSelector("a[data-qa='continue-button']"));
+        continueButton.click();
         return new HomePage(driver);
     }
 }

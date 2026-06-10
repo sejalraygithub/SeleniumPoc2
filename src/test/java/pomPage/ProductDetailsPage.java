@@ -2,60 +2,44 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class ProductDetailsPage extends BasePage {
+public class ProductDetailsPage {
 
-    private final By productName = By.cssSelector(".product-information h2");
-    private final By productCategory = By.xpath("//div[@class='product-information']/p[contains(.,'Category')]");
-    private final By productPrice = By.cssSelector(".product-information span span");
-    private final By productAvailability = By.xpath("//b[contains(.,'Availability')]");
-    private final By quantityInput = By.id("quantity");
-    private final By addToCartButton = By.cssSelector("button.cart");
-    private final By viewCartLinkOnPopup = By.xpath("//u[contains(.,'View Cart')]");
+    WebDriver driver;
+
+    WebElement productName;
+    WebElement productCategory;
+    WebElement productPrice;
+    WebElement productAvailability;
+    WebElement quantityTextbox;
+    WebElement addToCartButton;
+    WebElement viewCartLink;
 
     public ProductDetailsPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        productName = driver.findElement(By.cssSelector(".product-information h2"));
+        productCategory = driver.findElement(By.xpath("//div[@class='product-information']/p[contains(text(),'Category')]"));
+        productPrice = driver.findElement(By.cssSelector(".product-information span span"));
+        productAvailability = driver.findElement(By.xpath("//b[contains(text(),'Availability')]"));
+        quantityTextbox = driver.findElement(By.id("quantity"));
+        addToCartButton = driver.findElement(By.cssSelector("button.cart"));
     }
 
-    // =========================
-    // ✅ ASSERTIONS ADDED
-    // =========================
-
-    public void verifyProductDetailsAreVisible() {
-        Assert.assertTrue(isDisplayed(productName), "Product name is not visible!");
-        Assert.assertTrue(isDisplayed(productCategory), "Product category is not visible!");
-        Assert.assertTrue(isDisplayed(productPrice), "Product price is not visible!");
-        Assert.assertTrue(isDisplayed(productAvailability), "Product availability is not visible!");
+    public boolean isProductDetailsDisplayed() {
+        return productName.isDisplayed()
+                && productCategory.isDisplayed()
+                && productPrice.isDisplayed()
+                && productAvailability.isDisplayed();
     }
 
-    public void verifyProductName(String expectedName) {
-        String actualName = textOf(productName);
-        Assert.assertEquals(actualName, expectedName, "Product name mismatch!");
-    }
-
-    public void verifyProductPrice(String expectedPrice) {
-        String actualPrice = textOf(productPrice);
-        Assert.assertEquals(actualPrice, expectedPrice, "Product price mismatch!");
-    }
-
-    public void verifyQuantityFieldIsVisible() {
-        Assert.assertTrue(isDisplayed(quantityInput), "Quantity input field is not visible!");
-    }
-
-    public void verifyDefaultQuantity(String expectedQty) {
-        String actualQty = driver.findElement(quantityInput).getAttribute("value");
-        Assert.assertEquals(actualQty, expectedQty, "Default quantity mismatch!");
-    }
-
-    // =========================
-    // ACTION METHOD (UNCHANGED)
-    // =========================
-
-    public CartPage addProductWithQuantityAndOpenCart(String quantity) {
-        type(quantityInput, quantity);
-        click(addToCartButton);
-        click(viewCartLinkOnPopup);
+    public CartPage addProductWithQuantity(String quantity) throws InterruptedException {
+        quantityTextbox.clear();
+        quantityTextbox.sendKeys(quantity);
+        addToCartButton.click();
+        Thread.sleep(1000);
+        viewCartLink = driver.findElement(By.xpath("//u[contains(text(),'View Cart')]"));
+        viewCartLink.click();
         return new CartPage(driver);
     }
 }

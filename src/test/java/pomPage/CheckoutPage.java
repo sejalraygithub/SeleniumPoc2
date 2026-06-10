@@ -2,67 +2,37 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class CheckoutPage extends BasePage {
+public class CheckoutPage {
 
-    private final By deliveryAddressBox = By.id("address_delivery");
-    private final By billingAddressBox = By.id("address_invoice");
-    private final By orderReviewTable = By.cssSelector(".cart_info");
-    private final By commentBox = By.name("message");
-    private final By placeOrderButton = By.xpath("//a[contains(.,'Place Order')]");
+    WebDriver driver;
+
+    WebElement deliveryAddress;
+    WebElement billingAddress;
+    WebElement orderSummary;
+    WebElement commentTextbox;
+    WebElement placeOrderButton;
 
     public CheckoutPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        deliveryAddress = driver.findElement(By.id("address_delivery"));
+        billingAddress = driver.findElement(By.id("address_invoice"));
+        orderSummary = driver.findElement(By.cssSelector(".cart_info"));
+        commentTextbox = driver.findElement(By.name("message"));
+        placeOrderButton = driver.findElement(By.xpath("//a[contains(text(),'Place Order')]"));
     }
 
-    // =========================
-    // ✅ ASSERTIONS ADDED
-    // =========================
-
-    public void verifyCheckoutPageIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(deliveryAddressBox),
-            "Delivery address box is not visible!"
-        );
-
-        Assert.assertTrue(
-            isDisplayed(billingAddressBox),
-            "Billing address box is not visible!"
-        );
-
-        Assert.assertTrue(
-            isDisplayed(orderReviewTable),
-            "Order review table is not visible!"
-        );
+    public boolean isCheckoutPageDisplayed() {
+        return deliveryAddress.isDisplayed()
+                && billingAddress.isDisplayed()
+                && orderSummary.isDisplayed();
     }
-
-    public void verifyDeliveryAndBillingAddressesVisible() {
-        Assert.assertTrue(
-            isDisplayed(deliveryAddressBox),
-            "Delivery address is not visible!"
-        );
-
-        Assert.assertTrue(
-            isDisplayed(billingAddressBox),
-            "Billing address is not visible!"
-        );
-    }
-
-    public void verifyPlaceOrderButtonIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(placeOrderButton),
-            "Place Order button is not visible!"
-        );
-    }
-
-    // =========================
-    // ACTION METHOD (UNCHANGED)
-    // =========================
 
     public PaymentPage placeOrder(String orderComment) {
-        type(commentBox, orderComment);
-        click(placeOrderButton);
+        commentTextbox.clear();
+        commentTextbox.sendKeys(orderComment);
+        placeOrderButton.click();
         return new PaymentPage(driver);
     }
 }

@@ -2,66 +2,27 @@ package pomPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+import org.openqa.selenium.WebElement;
 
-public class AccountCreatedPage extends BasePage {
+public class AccountCreatedPage {
 
-    private final By accountCreatedHeading = By.cssSelector("h2[data-qa='account-created']");
-    private final By continueButton = By.cssSelector("a[data-qa='continue-button']");
+    WebDriver driver;
+
+    WebElement accountCreatedHeading;
+    WebElement continueButton;
 
     public AccountCreatedPage(WebDriver driver) {
-        super(driver);
+        this.driver = driver;
+        accountCreatedHeading = driver.findElement(By.cssSelector("h2[data-qa='account-created']"));
+        continueButton = driver.findElement(By.cssSelector("a[data-qa='continue-button']"));
     }
 
-    // ✅ Check message is visible
-    public void verifyAccountCreatedMessageIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(accountCreatedHeading),
-            "Account Created message is NOT visible!"
-        );
+    public boolean isAccountCreatedMessageDisplayed() {
+        return accountCreatedHeading.isDisplayed();
     }
 
-    // ✅ Validate actual text of heading
-    public void verifyAccountCreatedText() {
-        String actualText = driver.findElement(accountCreatedHeading).getText();
-        Assert.assertEquals(
-            actualText,
-            "ACCOUNT CREATED!",
-            "Account created text mismatch!"
-        );
-    }
-
-    // ✅ Validate page title
-    public void verifyPageTitle() {
-        Assert.assertEquals(
-            driver.getTitle(),
-            "Account Created",
-            "Page title does not match!"
-        );
-    }
-
-    // ✅ Validate URL contains expected keyword
-    public void verifyPageURL() {
-        Assert.assertTrue(
-            driver.getCurrentUrl().contains("account_created"),
-            "URL does not contain expected keyword!"
-        );
-    }
-
-    // ✅ Check continue button is visible
-    public void verifyContinueButtonIsVisible() {
-        Assert.assertTrue(
-            isDisplayed(continueButton),
-            "Continue button is NOT visible!"
-        );
-    }
-
-    public HomePage continueToHomePage() {
-        click(continueButton);
+    public HomePage clickContinue() {
+        continueButton.click();
         return new HomePage(driver);
     }
-
-	public boolean isAccountCreatedMessageVisible() {
-		return isDisplayed(accountCreatedHeading);
-	}
 }

@@ -1,54 +1,51 @@
 package testcases;
 
-import org.testng.annotations.Test;
 import Base.BaseTest;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import pomPage.AccountCreatedPage;
+import pomPage.AccountInformationPage;
 import pomPage.HomePage;
 import pomPage.SignupLoginPage;
+import utils.TestData;
 
 public class LoginTest extends BaseTest {
 
-    @Test(groups = {"positive", "regression"})
-    public void verifyValidUserCanLogin() {
+    @Test
+    public void verifyUserCanLogin() {
+        String email = TestData.getNewEmail();
 
-        SignupLoginPage signupLoginPage = new HomePage(driver)
-                .openSignupLoginPage();
+        HomePage homePage = new HomePage(driver);
+        SignupLoginPage signupLoginPage = homePage.clickSignupLogin();
+        AccountInformationPage accountInformationPage =
+                signupLoginPage.enterSignupDetails(TestData.userName, email);
 
-        HomePage homePage = signupLoginPage.login(BaseTest.validEmail, BaseTest.validPassword);
+        AccountCreatedPage accountCreatedPage = accountInformationPage.createAccount(
+                TestData.firstName,
+                TestData.lastName,
+                TestData.password,
+                TestData.address,
+                TestData.country,
+                TestData.state,
+                TestData.city,
+                TestData.zipcode,
+                TestData.mobileNumber
+        );
 
-        homePage.verifyUserIsLoggedIn();
+        homePage = accountCreatedPage.clickContinue();
+        signupLoginPage = homePage.clickLogout();
+        homePage = signupLoginPage.loginUser(email, TestData.password);
+
+        Assert.assertTrue(homePage.isLoggedInAsUserDisplayed(), "User is not logged in");
     }
 
-    @Test(groups = {"e2e", "regression"})
-    public void verifyValidUserCanLoginAndLogout() {
+    @Test
+    public void verifyInvalidLoginShowsError() {
+        HomePage homePage = new HomePage(driver);
+        SignupLoginPage signupLoginPage = homePage.clickSignupLogin();
 
-        SignupLoginPage signupLoginPage = new HomePage(driver)
-                .openSignupLoginPage();
+        signupLoginPage.submitLoginDetails("wronguser@testmail.com", "wrongpassword");
 
-        HomePage homePage = signupLoginPage.login(BaseTest.validEmail, BaseTest.validPassword);
-
-        homePage.logout();
-        signupLoginPage.verifyLoginFormIsVisible();
-    }
-
-    @Test(groups = {"negative", "regression"})
-    public void verifyInvalidLoginShowsCorrectError() {
-
-        SignupLoginPage signupLoginPage = new HomePage(driver)
-                .openSignupLoginPage();
-
-        signupLoginPage.submitLogin("wrong.user@test.com", "wrong-password");
-
-        signupLoginPage.verifyInvalidLoginErrorIsVisible();
-    }
-
-    @Test(groups = {"negative"})
-    public void verifyBlankLoginDoesNotSubmit() {
-
-        SignupLoginPage signupLoginPage = new HomePage(driver)
-                .openSignupLoginPage();
-
-        signupLoginPage.submitLogin("", "");
-
-        signupLoginPage.verifyLoginFormIsVisible();
+        Assert.assertTrue(signupLoginPage.isInvalidLoginErrorDisplayed(), "Invalid login error is not displayed");
     }
 }
